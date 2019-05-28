@@ -51,7 +51,7 @@ public class movieInfoActivity extends AppCompatActivity {
     Integer movieId;
 
     ImageView imgPoster;
-    TextView txtTitle,txtGenre,txtActor,txtRelease;
+    TextView txtTitle,txtGenre,txtActor,txtRelease,txtDesc;
 
     imageAdapter adapter;
     RecyclerView rc;
@@ -73,6 +73,7 @@ public class movieInfoActivity extends AppCompatActivity {
         txtActor = findViewById(R.id.txtActors);
         txtGenre = findViewById(R.id.txtGenre);
         txtRelease = findViewById(R.id.txtRelease);
+        txtDesc = findViewById(R.id.txtMovieDescInfo);
         imgPoster = findViewById(R.id.imgPoster);
 
         findViewById(R.id.constraintLayout).setVisibility(View.GONE);
@@ -102,9 +103,10 @@ public class movieInfoActivity extends AppCompatActivity {
 
                 txtGenre.setText(m.getGenres().replace("[","").replace("]",""));
                 txtTitle.setText(m.getOriginalTitle() + " (" + m.getReleaseDate().substring(0,4) + ")");
-                txtRelease.setText(m.getReleaseDate().substring(8,10) + "." + m.getReleaseDate().substring(5,7) + "." + m.getReleaseDate().substring(0,4));
+                txtRelease.setText("Release date: " + m.getReleaseDate().substring(8,10) + "." + m.getReleaseDate().substring(5,7) + "." + m.getReleaseDate().substring(0,4));
                 txtActor.setText(m.getHomepage());
                 txtActor.setMovementMethod(LinkMovementMethod.getInstance());
+                txtDesc.setText(m.getOverview());
                 Picasso.get().load("https://image.tmdb.org/t/p/w500/" + m.getPosterPath()).placeholder(R.drawable.ic_launcher_foreground).into(imgPoster);
                 findViewById(R.id.constraintLayout).setVisibility(View.VISIBLE);
                 findViewById(R.id.loadingPanel).setVisibility(View.GONE);

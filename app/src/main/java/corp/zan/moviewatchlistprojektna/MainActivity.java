@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         txtSearch = findViewById(R.id.txtSearch);
         btnSearch = findViewById(R.id.btnSearch);
 
+        getPopular();
+
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +99,41 @@ public class MainActivity extends AppCompatActivity {
     private void findMovie(String search){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         final String API_URL1 = "https://api.themoviedb.org/3/search/movie?api_key=f53eae365339a0ca4c3062e895a8fb21&query=" + search;
+
+        JsonObjectRequest request = new JsonObjectRequest(JsonRequest.Method.GET, API_URL1, (JSONObject) null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                findViewById(R.id.loadingPanelMain).setVisibility(View.GONE);
+                mv = getGson().fromJson(response.toString() , MovieList.class);
+                adapter = new searchAdapter(mv.getResults());
+
+                rc.setAdapter(adapter);
+                rc.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                adapter.setOnItemClickListener(new searchAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View itemView, int position) {
+                        int tmp = mv.get(position).getId();
+                        //Toast.makeText(MainActivity.this,tmp,Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(getBaseContext(),movieInfoActivity.class);
+                        i.putExtra("MovieId",tmp);
+                        startActivity(i);
+                    }
+                });
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                findViewById(R.id.loadingPanelMain).setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_LONG);
+            }
+        });
+        requestQueue.add(request);
+    }
+
+
+    private void getPopular(){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        final String API_URL1 = "https://api.themoviedb.org/3/movie/popular?api_key=f53eae365339a0ca4c3062e895a8fb21";
 
         JsonObjectRequest request = new JsonObjectRequest(JsonRequest.Method.GET, API_URL1, (JSONObject) null, new Response.Listener<JSONObject>() {
             @Override
