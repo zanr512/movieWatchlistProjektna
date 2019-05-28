@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         rc = findViewById(R.id.recSearch);
 
 
+        findViewById(R.id.loadingPanelMain).setVisibility(View.GONE);
+
 
 
 
@@ -66,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    Toast.makeText(getApplicationContext(),txtSearch.getText().toString(),Toast.LENGTH_LONG).show();
+                    findViewById(R.id.loadingPanelMain).setVisibility(View.VISIBLE);
+                    //Toast.makeText(getApplicationContext(),txtSearch.getText().toString(),Toast.LENGTH_LONG).show();
                     findMovie(txtSearch.getText().toString());
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest request = new JsonObjectRequest(JsonRequest.Method.GET, API_URL1, (JSONObject) null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                findViewById(R.id.loadingPanelMain).setVisibility(View.GONE);
                 mv = getGson().fromJson(response.toString() , MovieList.class);
                 adapter = new searchAdapter(mv.getResults());
 
@@ -117,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                findViewById(R.id.loadingPanelMain).setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_LONG);
             }
         });

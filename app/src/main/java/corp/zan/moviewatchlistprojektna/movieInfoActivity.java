@@ -3,6 +3,7 @@ package corp.zan.moviewatchlistprojektna;
 import android.app.Dialog;
 import android.content.Intent;
 import android.media.Image;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -73,6 +74,8 @@ public class movieInfoActivity extends AppCompatActivity {
         txtGenre = findViewById(R.id.txtGenre);
         txtRelease = findViewById(R.id.txtRelease);
         imgPoster = findViewById(R.id.imgPoster);
+
+        findViewById(R.id.constraintLayout).setVisibility(View.GONE);
     }
 
     @Override
@@ -103,6 +106,8 @@ public class movieInfoActivity extends AppCompatActivity {
                 txtActor.setText(m.getHomepage());
                 txtActor.setMovementMethod(LinkMovementMethod.getInstance());
                 Picasso.get().load("https://image.tmdb.org/t/p/w500/" + m.getPosterPath()).placeholder(R.drawable.ic_launcher_foreground).into(imgPoster);
+                findViewById(R.id.constraintLayout).setVisibility(View.VISIBLE);
+                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
 
 
