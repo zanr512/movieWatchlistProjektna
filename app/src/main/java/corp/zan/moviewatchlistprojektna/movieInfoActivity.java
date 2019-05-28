@@ -1,6 +1,8 @@
 package corp.zan.moviewatchlistprojektna;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.support.constraint.ConstraintLayout;
@@ -86,7 +88,29 @@ public class movieInfoActivity extends AppCompatActivity {
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"TEST",Toast.LENGTH_LONG).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(movieInfoActivity.this);
+                builder.setTitle("Add movie to the list");
+                int selected = 0;
+
+                String[] list = {"Watched", "Will watch"};
+                builder.setSingleChoiceItems(list, selected, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(),"OK",Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
             }
         });
