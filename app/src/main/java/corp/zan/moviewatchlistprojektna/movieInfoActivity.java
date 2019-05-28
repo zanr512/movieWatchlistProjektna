@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.media.Image;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,6 +54,7 @@ public class movieInfoActivity extends AppCompatActivity {
 
     ImageView imgPoster;
     TextView txtTitle,txtGenre,txtActor,txtRelease,txtDesc;
+    FloatingActionButton actionButton;
 
     imageAdapter adapter;
     RecyclerView rc;
@@ -75,8 +78,18 @@ public class movieInfoActivity extends AppCompatActivity {
         txtRelease = findViewById(R.id.txtRelease);
         txtDesc = findViewById(R.id.txtMovieDescInfo);
         imgPoster = findViewById(R.id.imgPoster);
+        actionButton = findViewById(R.id.btnAddToList);
 
         findViewById(R.id.constraintLayout).setVisibility(View.GONE);
+
+
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"TEST",Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
     @Override
