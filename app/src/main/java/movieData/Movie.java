@@ -1,6 +1,7 @@
 
 package movieData;
 
+import java.math.BigInteger;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -57,7 +58,7 @@ public class Movie {
     private String releaseDate;
     @SerializedName("revenue")
     @Expose
-    private Integer revenue;
+    private BigInteger revenue;
     @SerializedName("runtime")
     @Expose
     private Integer runtime;
@@ -115,8 +116,8 @@ public class Movie {
         this.budget = budget;
     }
 
-    public String getGenres() {
-        return  this.genres.toString();
+    public List<Genre> getGenres() {
+        return  this.genres;
     }
 
     public void setGenres(List<Genre> genres) {
@@ -211,11 +212,11 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public Integer getRevenue() {
+    public BigInteger getRevenue() {
         return revenue;
     }
 
-    public void setRevenue(Integer revenue) {
+    public void setRevenue(BigInteger revenue) {
         this.revenue = revenue;
     }
 
@@ -281,6 +282,10 @@ public class Movie {
 
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public String getGenresString(){
+        return this.genres.toString();
     }
 
 }
