@@ -27,6 +27,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -65,6 +66,7 @@ public class movieInfoActivity extends AppCompatActivity {
     RecyclerView rc;
 
     Images img;
+    private FirebaseAuth mAuth;
 
 
 
@@ -86,6 +88,7 @@ public class movieInfoActivity extends AppCompatActivity {
         actionButton = findViewById(R.id.btnAddToList);
 
         findViewById(R.id.constraintLayout).setVisibility(View.GONE);
+        mAuth = FirebaseAuth.getInstance();
 
 
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +111,7 @@ public class movieInfoActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getApplicationContext(),"OK",Toast.LENGTH_LONG).show();
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        db.collection("tmp").add(m);
+                        db.collection("users").document(mAuth.getUid()).set(m);
                     }
                 });
 

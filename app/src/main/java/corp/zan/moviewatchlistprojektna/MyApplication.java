@@ -5,11 +5,21 @@ import android.app.Application;
 import movieData.WatchLists;
 
 public class MyApplication extends Application {
-    WatchLists list;
+    private WatchLists list = new WatchLists();
 
 
     MyApplication(){
         super();
 
+
+    }
+
+
+    public WatchLists getList() {
+        return list;
+    }
+
+    public void setList(WatchLists list) {
+        this.list = list;
     }
 }
