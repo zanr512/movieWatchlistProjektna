@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,10 +28,15 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -52,6 +58,7 @@ import movieData.Images;
 import movieData.Movie;
 import movieData.Poster;
 import movieData.Backdrop;
+import movieData.WatchLists;
 
 public class movieInfoActivity extends AppCompatActivity {
     Movie m;
@@ -60,13 +67,15 @@ public class movieInfoActivity extends AppCompatActivity {
 
     ImageView imgPoster;
     TextView txtTitle,txtGenre,txtActor,txtRelease,txtDesc;
-    FloatingActionButton actionButton;
+    FloatingActionButton actionButton, watchedBtn;
 
     imageAdapter adapter;
     RecyclerView rc;
 
     Images img;
     private FirebaseAuth mAuth;
+
+    WatchLists watchLists;
 
 
 
@@ -86,42 +95,82 @@ public class movieInfoActivity extends AppCompatActivity {
         txtDesc = findViewById(R.id.txtMovieDescInfo);
         imgPoster = findViewById(R.id.imgPoster);
         actionButton = findViewById(R.id.btnAddToList);
+        watchedBtn = findViewById(R.id.btnAddToWatched);
 
         findViewById(R.id.constraintLayout).setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
 
+        final FirebaseFirestore tmp = FirebaseFirestore.getInstance();
+        DocumentReference docRef = tmp.collection("users").document(mAuth.getUid());
 
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists())
+                    {
+                        watchLists = document.toObject(WatchLists.class);
+
+                        check();
+                    }
+                    else{
+
+                        watchLists = new WatchLists();
+                    }
+
+
+                }
+
+            }
+        });
+
+
+        //Add to watchlist
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(movieInfoActivity.this);
-                builder.setTitle("Add movie to the list");
-                int selected = 0;
+                if(watchLists.getToWatch().contains(m))
+                {
+                    Snackbar.make(v,"You have already watched this movie",Snackbar.LENGTH_LONG).show();
+                }
+                else{
+                    watchLists.addToWatch(m.getId());
+                    tmp.collection("users").document(mAuth.getUid()).set(watchLists);
+                }
+                actionButton.hide();
 
-                String[] list = {"Watched", "Will watch"};
-                builder.setSingleChoiceItems(list, selected, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-
-                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(),"OK",Toast.LENGTH_LONG).show();
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        db.collection("users").document(mAuth.getUid()).set(m);
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", null);
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
 
             }
         });
+
+        //WATCHED
+        watchedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(watchLists.getToWatch().contains(m.getId()))
+                {
+                    watchLists.getToWatch().remove(m.getId());
+                }
+                watchLists.addWathed(m.getId());
+                tmp.collection("users").document(mAuth.getUid()).set(watchLists);
+                watchedBtn.hide();
+            }
+        });
+    }
+
+    private void check() {
+        if(watchLists.getToWatch().contains(m.getId())){
+            actionButton.setVisibility(View.GONE);
+            Toast.makeText(getApplicationContext(),"VSEBUJE",Toast.LENGTH_LONG).show();
+        }
+        if(watchLists.getWatched().contains(m.getId())) {
+            watchedBtn.setVisibility(View.GONE);
+            Toast.makeText(getApplicationContext(), "VSEBUJE 1", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
@@ -146,9 +195,17 @@ public class movieInfoActivity extends AppCompatActivity {
 
                 m = getGson().fromJson(response.toString() , Movie.class);
 
-                txtGenre.setText(m.getGenres().replace("[","").replace("]",""));
-                txtTitle.setText(m.getOriginalTitle() + " (" + m.getReleaseDate().substring(0,4) + ")");
-                txtRelease.setText("Release date: " + m.getReleaseDate().substring(8,10) + "." + m.getReleaseDate().substring(5,7) + "." + m.getReleaseDate().substring(0,4));
+                txtGenre.setText(m.getGenresString().replace("[","").replace("]",""));
+                if(m.getReleaseDate().isEmpty())
+                {
+                    txtTitle.setText(m.getOriginalTitle());
+                }
+                else{
+                    txtTitle.setText(m.getOriginalTitle() + " (" + m.getReleaseDate().substring(0,4) + ")");
+                    txtRelease.setText("Release date: " + m.getReleaseDate().substring(8,10) + "." + m.getReleaseDate().substring(5,7) + "." + m.getReleaseDate().substring(0,4));
+                }
+
+
                 txtActor.setText(m.getHomepage());
                 txtActor.setMovementMethod(LinkMovementMethod.getInstance());
                 txtDesc.setText(m.getOverview());

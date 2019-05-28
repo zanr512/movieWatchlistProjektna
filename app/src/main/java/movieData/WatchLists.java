@@ -1,39 +1,36 @@
 package movieData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WatchLists {
-    private List<Movie> watched;
-    private List<Movie> toWatch;
-    private List<Genre> genresList;
-    private String UUID;
+    private ArrayList<Integer> watched = new ArrayList<Integer>();
+    private ArrayList<Integer> toWatch = new ArrayList<Integer>();
 
-    public List<Movie> getWatched() {
+
+    public ArrayList<Integer> getWatched() {
         return watched;
-
     }
 
-    public void setWatched(List<Movie> watched) {
+    public void setWatched(ArrayList<Integer> watched) {
         this.watched = watched;
     }
 
-    public List<Movie> getToWatch() {
+    public ArrayList<Integer> getToWatch() {
         return toWatch;
     }
 
-    public void setToWatch(List<Movie> toWatch) {
+    public void setToWatch(ArrayList<Integer> toWatch) {
         this.toWatch = toWatch;
     }
 
-    public List<Genre> getGenresList() {
-        return genresList;
+    public void addWathed(int id){
+        this.watched.add(id);
     }
 
-    public void setGenresList(List<Genre> genresList) {
-        this.genresList = genresList;
+    public void addToWatch(int id){
+        this.toWatch.add(id);
     }
 
-    public String getUUID() {
-        return UUID;
-    }
+
 }
