@@ -1,12 +1,7 @@
 package corp.zan.moviewatchlistprojektna;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,16 +20,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -49,14 +38,11 @@ import org.json.JSONObject;
 
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import movieData.Images;
 import movieData.Movie;
-import movieData.Poster;
 import movieData.Backdrop;
 import movieData.WatchLists;
 
@@ -132,12 +118,12 @@ public class movieInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(watchLists.getToWatch().contains(m))
+                if(watchLists.containsToWatch(movieId))
                 {
                     Snackbar.make(v,"You have already watched this movie",Snackbar.LENGTH_LONG).show();
                 }
                 else{
-                    watchLists.addToWatch(m.getId());
+                    watchLists.addToWatch(m);
                     tmp.collection("users").document(mAuth.getUid()).set(watchLists);
                 }
                 actionButton.hide();
@@ -150,25 +136,26 @@ public class movieInfoActivity extends AppCompatActivity {
         watchedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(watchLists.getToWatch().contains(m.getId()))
+                if(watchLists.containsWatched(movieId))
                 {
-                    watchLists.getToWatch().remove(m.getId());
+                    watchLists.getToWatch().remove(m);
                 }
-                watchLists.addWathed(m.getId());
+                watchLists.addWatched(m);
                 tmp.collection("users").document(mAuth.getUid()).set(watchLists);
                 watchedBtn.hide();
+                actionButton.hide();
             }
         });
     }
 
     private void check() {
-        if(watchLists.getToWatch().contains(m.getId())){
-            actionButton.setVisibility(View.GONE);
-            Toast.makeText(getApplicationContext(),"VSEBUJE",Toast.LENGTH_LONG).show();
+        if(watchLists.containsToWatch(movieId)){
+            actionButton.hide();
         }
-        if(watchLists.getWatched().contains(m.getId())) {
-            watchedBtn.setVisibility(View.GONE);
-            Toast.makeText(getApplicationContext(), "VSEBUJE 1", Toast.LENGTH_LONG).show();
+        if(watchLists.containsWatched(movieId)) {
+            watchedBtn.hide();
+            actionButton.hide();
+
         }
 
     }

@@ -1,7 +1,6 @@
 
 package movieData;
 
-import java.math.BigInteger;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -58,7 +57,7 @@ public class Movie {
     private String releaseDate;
     @SerializedName("revenue")
     @Expose
-    private BigInteger revenue;
+    private Double revenue;
     @SerializedName("runtime")
     @Expose
     private Integer runtime;
@@ -212,11 +211,11 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public BigInteger getRevenue() {
+    public Double getRevenue() {
         return revenue;
     }
 
-    public void setRevenue(BigInteger revenue) {
+    public void setRevenue(Double revenue) {
         this.revenue = revenue;
     }
 
