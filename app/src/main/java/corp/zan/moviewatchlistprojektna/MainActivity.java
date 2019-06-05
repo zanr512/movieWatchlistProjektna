@@ -3,6 +3,7 @@ package corp.zan.moviewatchlistprojektna;
 import android.app.VoiceInteractor;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnSearch;
     EditText txtSearch;
     private FirebaseAuth mAuth;
+    FloatingActionButton btn;
 
     GoogleSignInClient mGoogleSignInClient;
 
@@ -84,6 +86,16 @@ public class MainActivity extends AppCompatActivity {
 
         txtSearch = findViewById(R.id.txtSearch);
         btnSearch = findViewById(R.id.btnSearch);
+
+
+        btn = findViewById(R.id.btnList);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),tabs.class);
+                startActivity(i);
+            }
+        });
 
         getPopular();
 
@@ -230,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onItemClick(View itemView, int position) {
                             int tmp = mv.get(position).getId();
                             //Toast.makeText(MainActivity.this,tmp,Toast.LENGTH_LONG).show();
-                            Intent i = new Intent(getBaseContext(), tabs.class);
+                            Intent i = new Intent(getBaseContext(), movieInfoActivity.class);
                             i.putExtra("MovieId", tmp);
                             startActivity(i);
                         }

@@ -40,6 +40,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import movieData.Images;
@@ -64,6 +65,8 @@ public class movieInfoActivity extends AppCompatActivity {
     RelativeLayout rv;
 
     WatchLists watchLists;
+
+    FirebaseFirestore tmp;
 
 
 
@@ -90,7 +93,7 @@ public class movieInfoActivity extends AppCompatActivity {
         findViewById(R.id.constraintLayout).setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
 
-        final FirebaseFirestore tmp = FirebaseFirestore.getInstance();
+        tmp = FirebaseFirestore.getInstance();
         DocumentReference docRef = tmp.collection("users").document(mAuth.getUid());
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -112,43 +115,9 @@ public class movieInfoActivity extends AppCompatActivity {
                         watchLists = new WatchLists();
                     }
 
-
+                    btns();
                 }
 
-            }
-        });
-
-
-        //Add to watchlist
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(watchLists.containsToWatch(movieId))
-                {
-                    Snackbar.make(v,"You have already watched this movie",Snackbar.LENGTH_LONG).show();
-                }
-                else{
-                    watchLists.addToWatch(m);
-                    tmp.collection("users").document(mAuth.getUid()).set(watchLists);
-                }
-                check();
-
-
-            }
-        });
-
-        //WATCHED
-        watchedBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(watchLists.containsWatched(movieId))
-                {
-                    watchLists.getToWatch().remove(m);
-                }
-                watchLists.addWatched(m);
-                tmp.collection("users").document(mAuth.getUid()).set(watchLists);
-                check();
             }
         });
     }
@@ -169,6 +138,42 @@ public class movieInfoActivity extends AppCompatActivity {
             txtWatched.setVisibility(View.GONE);
         }
 
+    }
+
+    private void btns(){
+        //Add to watchlist
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(watchLists != null && watchLists.containsToWatch(movieId))
+                {
+                    Snackbar.make(v,"You have already watched this movie",Snackbar.LENGTH_LONG).show();
+                }
+                else{
+                    watchLists.addToWatch(m);
+                    tmp.collection("users").document(mAuth.getUid()).set(watchLists);
+                }
+                check();
+
+
+            }
+        });
+
+        //WATCHED
+        watchedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(watchLists.containsToWatch(movieId))
+                {
+                    watchLists.getToWatch().remove(m);
+
+                }
+                watchLists.addWatched(m);
+                tmp.collection("users").document(mAuth.getUid()).set(watchLists);
+                check();
+            }
+        });
     }
 
     @Override

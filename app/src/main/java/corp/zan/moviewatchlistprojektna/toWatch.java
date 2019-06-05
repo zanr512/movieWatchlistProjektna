@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,11 +37,14 @@ public class toWatch extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     WatchLists watchLists;
     RecyclerView rv;
+    watclistAdapter adapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -118,5 +122,39 @@ public class toWatch extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rv = getView().findViewById(R.id.toWatchRec);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final FirebaseFirestore tmp = FirebaseFirestore.getInstance();
+        DocumentReference docRef = tmp.collection("users").document(mAuth.getUid());
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists())
+                    {
+                        watchLists = document.toObject(WatchLists.class);
+
+                    }
+                    else{
+
+                        watchLists = new WatchLists();
+                    }
+
+                    adapter = new watclistAdapter(watchLists.getToWatch());
+                    rv.setAdapter(adapter);
+                    rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                }
+            }
+        });
+
     }
 }

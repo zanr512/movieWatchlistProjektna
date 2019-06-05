@@ -3,10 +3,23 @@ package corp.zan.moviewatchlistprojektna;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import movieData.WatchLists;
 
 
 /**
@@ -22,6 +35,9 @@ public class watched extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    WatchLists watchLists;
+    RecyclerView rv;
+    watclistAdapter adapter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -100,5 +116,39 @@ public class watched extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rv = getView().findViewById(R.id.watchedRec);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final FirebaseFirestore tmp = FirebaseFirestore.getInstance();
+        DocumentReference docRef = tmp.collection("users").document(mAuth.getUid());
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists())
+                    {
+                        watchLists = document.toObject(WatchLists.class);
+
+                    }
+                    else{
+
+                        watchLists = new WatchLists();
+                    }
+
+                    adapter = new watclistAdapter(watchLists.getWatched());
+                    rv.setAdapter(adapter);
+                    rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                }
+            }
+        });
+
     }
 }

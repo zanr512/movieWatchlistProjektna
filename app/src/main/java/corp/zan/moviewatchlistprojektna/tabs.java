@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,8 +27,7 @@ import movieData.WatchLists;
 public class tabs extends AppCompatActivity implements watched.OnFragmentInteractionListener, toWatch.OnFragmentInteractionListener{
 
 
-    WatchLists watchLists;
-    RecyclerView rv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,36 +38,6 @@ public class tabs extends AppCompatActivity implements watched.OnFragmentInterac
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        rv = findViewById(R.id.toWatchRec);
-
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        final FirebaseFirestore tmp = FirebaseFirestore.getInstance();
-        DocumentReference docRef = tmp.collection("users").document(mAuth.getUid());
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists())
-                    {
-                        watchLists = document.toObject(WatchLists.class);
-
-                    }
-                    else{
-
-                        watchLists = new WatchLists();
-                    }
-
-
-
-
-                }
-
-
-            }
-        });
 
     }
 

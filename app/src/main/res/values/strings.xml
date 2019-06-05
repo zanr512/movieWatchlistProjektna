@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">movieWatchlistProjektna</string>
     <string name="title_activity_list">list</string>
-    <string name="tab_text_1">Watch List</string>
-    <string name="tab_text_2">Watched</string>
+    <string name="tab_text_1">Watched</string>
+    <string name="tab_text_2">Watch List</string>
     <string name="watched">You have already watched this movie!</string>
     <string name="toWatch">You have added this movie to your watchlist!</string>
     <string name="title_activity_lists">lists</string>
