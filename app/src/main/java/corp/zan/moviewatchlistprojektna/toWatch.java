@@ -152,6 +152,16 @@ public class toWatch extends Fragment {
                     adapter = new watclistAdapter(watchLists.getToWatch());
                     rv.setAdapter(adapter);
                     rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                    adapter.setOnItemClickListener(new watclistAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View itemView, int position) {
+                            int tmp1 = watchLists.getToWatch().get(position).getId();
+                            //Toast.makeText(MainActivity.this,tmp,Toast.LENGTH_LONG).show();
+                            Intent i = new Intent(getActivity().getBaseContext(), movieInfoActivity.class);
+                            i.putExtra("MovieId", tmp1);
+                            startActivity(i);
+                        }
+                    });
                 }
             }
         });

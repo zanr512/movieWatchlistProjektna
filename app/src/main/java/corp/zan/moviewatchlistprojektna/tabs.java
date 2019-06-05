@@ -45,4 +45,5 @@ public class tabs extends AppCompatActivity implements watched.OnFragmentInterac
     public void onFragmentInteraction(Uri uri){
         //you can leave it empty
     }
+
 }
