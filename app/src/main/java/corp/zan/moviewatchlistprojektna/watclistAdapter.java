@@ -1,30 +1,26 @@
 package corp.zan.moviewatchlistprojektna;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import movieData.MovieList;
-import movieData.Result;
+import movieData.Movie;
 
-public class searchAdapter extends RecyclerView.Adapter<searchAdapter.ViewHolder> {
-    List<Result> mv;
-
+public class watclistAdapter extends RecyclerView.Adapter<watclistAdapter.ViewHolder> {
+    List<Movie> mv;
 
 
-    public searchAdapter(ArrayList<Result> mv){
+
+    public watclistAdapter(ArrayList<Movie> mv){
         this.mv = mv;
     }
 
@@ -36,9 +32,9 @@ public class searchAdapter extends RecyclerView.Adapter<searchAdapter.ViewHolder
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
     }
-    private OnItemClickListener listener;
+    private watclistAdapter.OnItemClickListener listener;
     // Define the method that allows the parent activity or fragment to define the listener
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(watclistAdapter.OnItemClickListener listener) {
         this.listener = listener;
     }
 
@@ -77,20 +73,20 @@ public class searchAdapter extends RecyclerView.Adapter<searchAdapter.ViewHolder
 
 
     @Override
-    public searchAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public watclistAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         // Inflate the custom layout
         View view = inflater.inflate(R.layout.search_layout, parent, false);
         // Return a new holder instance
-        searchAdapter.ViewHolder viewHolder = new searchAdapter.ViewHolder(view);
+        watclistAdapter.ViewHolder viewHolder = new watclistAdapter.ViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(searchAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(watclistAdapter.ViewHolder holder, int position) {
         // Get the data model based on position
-        final Result trenutni = mv.get(position);
+        final Movie trenutni = mv.get(position);
 
         String tmp = trenutni.getOverview();
         if(tmp.length() >= 200)
