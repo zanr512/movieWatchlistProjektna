@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            Toast.makeText(getApplicationContext(), mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Hello " + mAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
         }
 
 
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onItemClick(View itemView, int position) {
                             int tmp = mv.get(position).getId();
                             //Toast.makeText(MainActivity.this,tmp,Toast.LENGTH_LONG).show();
-                            Intent i = new Intent(getBaseContext(), movieInfoActivity.class);
+                            Intent i = new Intent(getBaseContext(), tabs.class);
                             i.putExtra("MovieId", tmp);
                             startActivity(i);
                         }

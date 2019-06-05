@@ -253,7 +253,7 @@ public class movieInfoActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(View itemView, int position) {
                         String path = t.get(position).getFilePath();
-                        Toast.makeText(getApplicationContext(),path,Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),path,Toast.LENGTH_LONG).show();
                         Intent i = new Intent(getBaseContext(),testni.class);
                         i.putExtra("Slike", path);
                         startActivity(i);
