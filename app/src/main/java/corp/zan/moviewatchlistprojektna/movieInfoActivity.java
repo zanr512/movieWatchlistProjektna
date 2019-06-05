@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +53,7 @@ public class movieInfoActivity extends AppCompatActivity {
     Integer movieId;
 
     ImageView imgPoster;
-    TextView txtTitle,txtGenre,txtActor,txtRelease,txtDesc;
+    TextView txtTitle,txtGenre,txtActor,txtRelease,txtDesc,txtWatched;
     FloatingActionButton actionButton, watchedBtn;
 
     imageAdapter adapter;
@@ -60,6 +61,7 @@ public class movieInfoActivity extends AppCompatActivity {
 
     Images img;
     private FirebaseAuth mAuth;
+    RelativeLayout rv;
 
     WatchLists watchLists;
 
@@ -82,6 +84,8 @@ public class movieInfoActivity extends AppCompatActivity {
         imgPoster = findViewById(R.id.imgPoster);
         actionButton = findViewById(R.id.btnAddToList);
         watchedBtn = findViewById(R.id.btnAddToWatched);
+        txtWatched = findViewById(R.id.txtWatched);
+        rv = findViewById(R.id.loadingPanel);
 
         findViewById(R.id.constraintLayout).setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
@@ -100,6 +104,8 @@ public class movieInfoActivity extends AppCompatActivity {
                         watchLists = document.toObject(WatchLists.class);
 
                         check();
+                        rv.setVisibility(View.GONE);
+
                     }
                     else{
 
@@ -126,7 +132,7 @@ public class movieInfoActivity extends AppCompatActivity {
                     watchLists.addToWatch(m);
                     tmp.collection("users").document(mAuth.getUid()).set(watchLists);
                 }
-                actionButton.hide();
+                check();
 
 
             }
@@ -142,20 +148,25 @@ public class movieInfoActivity extends AppCompatActivity {
                 }
                 watchLists.addWatched(m);
                 tmp.collection("users").document(mAuth.getUid()).set(watchLists);
-                watchedBtn.hide();
-                actionButton.hide();
+                check();
             }
         });
     }
 
     private void check() {
-        if(watchLists.containsToWatch(movieId)){
-            actionButton.hide();
-        }
         if(watchLists.containsWatched(movieId)) {
             watchedBtn.hide();
             actionButton.hide();
-
+            txtWatched.setVisibility(View.VISIBLE);
+            txtWatched.setText(R.string.watched);
+        }
+        else if(watchLists.containsToWatch(movieId)){
+            actionButton.hide();
+            txtWatched.setVisibility(View.VISIBLE);
+            txtWatched.setText(R.string.toWatch);
+        }
+        else {
+            txtWatched.setVisibility(View.GONE);
         }
 
     }
